@@ -1,36 +1,36 @@
 #############################################################################################################################################
 ##                                                                                                                                         ##
-##    .Objeto: Creaci髇 del 醨bol con la estructura de los management groups en Azure                                                      ##
+##    .Objeto: Creaci贸n del 谩rbol con la estructura de los management groups en Azure                                                      ##
 ##    .Descripcion:                                                                                                                        ##
-##    Crear el management group de la organizaci髇                                                                                         ##
+##    Crear el management group de la organizaci贸n                                                                                         ##
 ##    Crear los management groups de primer nivel                                                                                          ##
 ##    Crear los management groups de la Plataforma                                                                                         ##
 ##    Crear los management groups de la Landing Zone                                                                                       ##
 ##    Mover las suscripciones desde el Tenant Root Group al management group que le corresponde                                            ##
-##    .Salida: Mostrar el grupo de administraci髇 creado y el grupo de recursos asociado                                                   ##
+##    .Salida: Mostrar el grupo de administraci贸n creado y el grupo de recursos asociado                                                   ##
 ##    .Autor: Dimas Ferrandis Gonzalvo                                                                                                     ##
-##    .Versi髇: 1.0                                                                                                                        ##
-##    .Fecha 鷏tima modificaci髇:                                                                                                          ##
+##    .Versi贸n: 1.0                                                                                                                        ##
+##    .Fecha 煤ltima modificaci贸n:                                                                                                          ##
 ##                                                                                                                                         ##
 #############################################################################################################################################
 
 
-# Importaci髇 de m骴ulos requeridos
+# Importaci贸n de m贸dulos requeridos
 Import-Module -Name Az.Accounts
 Import-Module -Name Az.Resources
 
-# Se modifica el protocolo tls a la versi髇 admitida.
+# Se modifica el protocolo tls a la versi贸n admitida.
 $TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12'
 [System.Net.ServicePointManager]::SecurityProtocol = $TLS12Protocol
 
-#Autenticaci髇
+#Autenticaci贸n
 $credenciales = Get-Credential
 
-# Inicia sesi髇 en tu cuenta de Azure
+# Inicia sesi贸n en tu cuenta de Azure
 Connect-AzAccount -Credential $credenciales
 
 
-## Funci髇
+## Funci贸n
 
 function GenerateManagementGroup {
     param (
@@ -49,28 +49,28 @@ function GenerateManagementGroup {
 
 $companyName = "GVA"
 
-# Company management group
+# Management group de la organizaci贸n
 $companyManagementGroupName, $companyManagementGroupGuid = GenerateManagementGroup -prefix "" -suffix $companyName
 
-# Top management groups
+# Management groups de Nivel 2
 $platformManagementGroupName, $platformManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_PL"
 $landingZonesManagementGroupName, $landingZonesManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_LZ"
 
 
-# Platform management groups
+# Management groups de la Plataforma
 $managementManagementGroupName, $managementManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_GE"
 $connectivityManagementGroupName, $connectivityManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_CON"
 $identityManagementGroupName, $identityManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_ID"
 
 
-# Landing zones management groups
-$corpManagementGroupName, $corpManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_CORP_PROD"
-$corpManagementGroupName, $corpManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_CORP_TEST"
+# Management groups de la Landing Zone
+$corpProdManagementGroupName, $corpManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_CORP_PROD"
+$corpTestManagementGroupName, $corpManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_CORP_TEST"
 $migrateManagementGroupName, $migrateManagementGroupGuid = GenerateManagementGroup -prefix $companyName -suffix "_MIG"
 
 
 
-# Subscriptions
+# Suscripciones
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*GVA*GE*"}
 $subNameConnectivity = Get-AzSubscription | Where-Object {$_.Name -like "*GVA*CON*"}
 $subNameIdentity = Get-AzSubscription | Where-Object {$_.Name -like "*GVA*ID*"}
@@ -79,7 +79,7 @@ $subNameCorpProd = Get-AzSubscription | Where-Object {$_.Name -like "*CORP*PROD*
 $subNameCorpTest = Get-AzSubscription | Where-Object {$_.Name -like "*CORP*TEST*"}
 
 
-# Time, colors, and formatting
+# Format, hora y color
 Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime = Get-Date -Format "dddd MM/dd/yyyy HH:mm"} | Out-Null 
 $foregroundColor1 = "Green"
 $foregroundColor2 = "Yellow"
@@ -88,7 +88,7 @@ $writeSeperatorSpaces = " - "
 
 ## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Create Company management group
+# Crear management group de la organizaci贸n
 $companyParentGroup = New-AzManagementGroup -GroupName $companyManagementGroupGuid -DisplayName $companyManagementGroupName
 
 Write-Host ($writeEmptyLine + "# Company management group $companyManagementGroupName created" + $writeSeperatorSpaces + $currentTime)`
@@ -96,12 +96,12 @@ Write-Host ($writeEmptyLine + "# Company management group $companyManagementGrou
 
 ## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create Top management groups
+## Crear management groups de Nivel 2
 
-# Create Platform management group
+# Crear management group Plataforma
 $platformParentGroup = New-AzManagementGroup -GroupName $platformManagementGroupGuid -DisplayName $platformManagementGroupName -ParentObject $companyParentGroup
 
-# Create Landing Zones management group
+# Crear management group Landing Zone
 $landingZonesParentGroup = New-AzManagementGroup -GroupName $landingZonesManagementGroupGuid -DisplayName $landingZonesManagementGroupName -ParentObject $companyParentGroup
 
 
@@ -109,15 +109,15 @@ Write-Host ($writeEmptyLine + "# Top management groups $platformManagementGroupN
 
 ## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create Platform management groups
+## Crear management groups de la Plataforma
 
-# Create Management management group
+# Crear management group de Gesti贸n
 New-AzManagementGroup -GroupName $managementManagementGroupGuid -DisplayName $managementManagementGroupName -ParentObject $platformParentGroup | Out-Null
 
-# Create Connectivity management group
+# Crear management group de Conectividad
 New-AzManagementGroup -GroupName $connectivityManagementGroupGuid -DisplayName $connectivityManagementGroupName -ParentObject $platformParentGroup | Out-Null
 
-# Create Identity management group
+# Create management group de Identidad
 New-AzManagementGroup -GroupName $identityManagementGroupGuid -DisplayName $identityManagementGroupName -ParentObject $platformParentGroup | Out-Null
 
 Write-Host ($writeEmptyLine + "# Platform management groups $managementManagementGroupName, $connectivityManagementGroupName and $identityManagementGroupName created" + $writeSeperatorSpaces + $currentTime)`
@@ -125,12 +125,15 @@ Write-Host ($writeEmptyLine + "# Platform management groups $managementManagemen
 
 ## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create Landing Zones management groups
+## Crear management groups de la Landing Zone
 
-# Create Corp management group
-New-AzManagementGroup -GroupName $corpManagementGroupGuid -DisplayName $corpManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+# Crear management group Corportivo entorno producci贸n
+New-AzManagementGroup -GroupName $corpProdManagementGroupGuid -DisplayName $corpManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
 
-# Create Migrate management group
+# Crear management group Corportivo entorno test
+New-AzManagementGroup -GroupName $corpTestManagementGroupGuid -DisplayName $corpManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+# Crear management group Migrate
 New-AzManagementGroup -GroupName $migrateManagementGroupGuid -DisplayName $migrateManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
 
 
@@ -139,33 +142,33 @@ Write-Host ($writeEmptyLine + "# Landing Zones management groups created" + $wri
 ## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-## Move subscriptions from the tenant root group or previous group scope to the appropriate management groups if they are present
+## Mover las suscripciones desde el Tenant Root Group al management groups apropiado si existe
 
-# Move Management subscription, if it exists
+# Mover Suscripci贸n de Gesti贸n
 If($subNameManagement)
 {
     New-AzManagementGroupSubscription -GroupId $managementManagementGroupGuid -SubscriptionId $subNameManagement.SubscriptionId | Out-Null
 }
 
-# Move Connectivity subscription, if it exists
+# Mover Suscripci贸n de Conectividad
 If($subNameConnectivity)
 {
     New-AzManagementGroupSubscription -GroupId $connectivityManagementGroupGuid -SubscriptionId $subNameConnectivity.SubscriptionId | Out-Null
 }
 
-# Move Identity subscription, if it exists
+# Mover Suscripci贸n de Identidad
 If($subNameIdentity)
 {
     New-AzManagementGroupSubscription -GroupId $identityManagementGroupGuid -SubscriptionId $subNameIdentity.SubscriptionId | Out-Null
 }
 
-# Move Corp Production subscription, if it exists
+# Mover Suscripci贸n de Landing Zone Corporativo Producci贸n
 If($subNameCorpProd)
 {
     New-AzManagementGroupSubscription -GroupId $corpManagementGroupGuid  -SubscriptionId $subNameCorpProd.SubscriptionId | Out-Null
 }
 
-# Move Corp Test subscription, if it exists
+# Mover Suscripci贸n de Landing Zone Corporativo Producci贸n
 If($subNameCorpTest)
 {
     New-AzManagementGroupSubscription -GroupId $corpManagementGroupGuid  -SubscriptionId $subNameCorpTest.SubscriptionId | Out-Null
@@ -177,9 +180,8 @@ Write-Host ($writeEmptyLine + "# Subscriptions moved to management groups" + $wr
 
 ## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Write script completed
+## Escribir Script completado
 
 Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
