@@ -1,7 +1,7 @@
 #############################################################################################################################################
 ##                                                                                                                                         ##
 ##    .Objeto: Creación de los grupos de administración en una suscripción determinada                                                     ##
-##    .Entrada: Funcionalidad o area del grupo de administración e identificador de la suscripción                                         ##
+##    .Entrada: Area, funcionalidad e identificador de la suscripción                                                                      ##
 ##    .Salida: Mostrar el grupo de administración creado                                                                                   ##
 ##    .Autor: Dimas Ferrandis Gonzalvo                                                                                                     ##
 ##    .Versión: 1.0                                                                                                                        ##
@@ -12,7 +12,6 @@
 
 # Importación de módulos requeridos 
 Import-Module -Name Az.Accounts
-Import-Module -Name Az.Billing
 Import-Module -Name Az.Resources
 
 # Se modifica el protocolo tls a la versión admitida.
@@ -22,15 +21,17 @@ $TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12'
 # Parámetros de entrada
 param (
     [Parameter(Mandatory = $true)]
-    [string]$Funcionalidad
+    [string]$area,
+    [Parameter(Mandatory = $true)]
+    [string]$funcionalidad,
     [Parameter(Mandatory = $true)]
     [string]$subscriptionId
 )
 
 # Variables
-$nombre_mg = "MG_GVA_${Funcionalidad}_01"
-$DisplayName_mg = "MG_GVA_${Funcionalidad}_01"
-$nombre_rg = "RG_GVA_${Funcionalidad}_01"
+$nombre_mg = "MG_GVA_${area}_${funcionalidad}_01"
+$DisplayName_mg = "MG_GVA_${area}_${funcionalidad}_01"
+$nombre_rg = "RG_GVA_${area}_${funcionalidad}_01"
 $Localizacion = "West Europe"
 
 #Autenticación
