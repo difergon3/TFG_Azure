@@ -1,6 +1,6 @@
 #############################################################################################################################################
 ##                                                                                                                                         ##
-##    .Objeto: Creaci髇 de una Vnet con subredes en un grupo de recursos                                                                   ##
+##    .Objeto: Creaci贸n de una Vnet con subredes en un grupo de recursos                                                                   ##
 ##    .Ejemplo:                                                                                                                            ##
 ##    $vNetName = 'GVA-PL-CON-GEN-VNET-01'                                                                                                 ##
 ##    $resourceGroupName = 'vcloud-lab.com'                                                                                                ##
@@ -9,28 +9,28 @@
 ##    $subnet01AddressPrefix = '10.10.1.0/24'                                                                                              ##
 ##    .Salida: Mostrar el listado de Vnet del grupo de recursos                                                                            ##
 ##    .Autor: Dimas Ferrandis Gonzalvo                                                                                                     ##
-##    .Versi髇: 1.0                                                                                                                        ##
-##    .Fecha 鷏tima modificaci髇:                                                                                                          ##
+##    .Versi贸n: 1.0                                                                                                                        ##
+##    .Fecha 煤ltima modificaci贸n:                                                                                                          ##
 ##                                                                                                                                         ##
 #############################################################################################################################################
 
 
-# Importaci髇 de m骴ulos requeridos
+# Importaci贸n de m贸dulos requeridos
 Import-Module -Name Az.Accounts
 Import-Module -Name Az.Resources
 Import-Module -Name Az.Network
 
-# Se modifica el protocolo tls a la versi髇 admitida.
+# Se modifica el protocolo tls a la versi贸n admitida.
 $TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12'
 [System.Net.ServicePointManager]::SecurityProtocol = $TLS12Protocol
 
-#Autenticaci髇
+#Autenticaci贸n
 $credenciales = Get-Credential
 
-# Inicia sesi髇 en tu cuenta de Azure
+# Inicia sesi贸n en tu cuenta de Azure
 Connect-AzAccount -Credential $credenciales
 
-#Par醡etros de entrada
+#Par谩metros de entrada
 param (
     [Parameter(Mandatory = $true)]
     [string]$vNetName,
