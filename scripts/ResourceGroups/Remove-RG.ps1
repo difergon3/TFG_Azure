@@ -1,23 +1,23 @@
 #############################################################################################################################################
 ##                                                                                                                                         ##
 ##    .Objeto: Eliminar un grupo de recursos y todos los recursos asociados en Azure                                                       ##
-##    .Ejemplo: Hay que ejecutar el script y solicitará los siguientes parámetros                                                          ##
+##    .Ejemplo: Hay que ejecutar el script y solicitarÃ¡ los siguientes parÃ¡metros                                                          ##
 ##              Parameter Name - Indicar el nombre del grupo de recursos                                                                   ##
 ##              Parameter Id - Indicar el ID del grupo de recursos a eliminar                                                              ##
 ##    .Notas                                                                                                                               ##
-##     Requiere el módulo Az.Resources                                                                                                     ##
+##     Requiere el mÃ³dulo Az.Resources                                                                                                     ##
 ##                                                                                                                                         ## 
 ##    .Autor: Dimas Ferrandis Gonzalvo                                                                                                     ##
-##    .Versión: 1.0                                                                                                                        ##
-##    .Fecha última modificación:                                                                                                          ##
+##    .VersiÃ³n: 1.0                                                                                                                        ##
+##    .Fecha Ãºltima modificaciÃ³n:                                                                                                          ##
 ##                                                                                                                                         ##
 #############################################################################################################################################
 
-# Importación de módulos requeridos
+# ImportaciÃ³n de mÃ³dulos requeridos
 Import-Module -Name Az.Accounts
 Import-Module -Name Az.Resources
 
-# Se modifica el protocolo tls a la versión admitida.
+# Se modifica el protocolo tls a la versiÃ³n admitida.
 $TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12'
 [System.Net.ServicePointManager]::SecurityProtocol = $TLS12Protocol
 
