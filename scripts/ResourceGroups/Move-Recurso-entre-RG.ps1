@@ -52,4 +52,4 @@ $resources = Get-AzResource -Name $Name
  Move-AzResource -DestinationResourceGroupName $destination_rg -ResourceId $resources.ResourceId
 
 # Muestra una lista de los recursos en el grupo de recursos de destino
- Get-AzResource -ResourceGroupName $rg-my-new-resourcegroup
+ Get-AzResource -ResourceGroupName $destination_rg
